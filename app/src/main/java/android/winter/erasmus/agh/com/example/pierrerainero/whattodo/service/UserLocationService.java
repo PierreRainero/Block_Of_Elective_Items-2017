@@ -1,20 +1,20 @@
-package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model;
+package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
+import android.os.Build;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -24,13 +24,13 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class UserLocationService {
 
-    public static boolean isGPSworking(LocationManager locationManager){
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    public static boolean isGPSworking(Context context){
+        return ((LocationManager)context.getSystemService(LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static Location getLastKnownLocation(Context context) {
         LocationManager locationManager = (LocationManager)context.getSystemService(LOCATION_SERVICE);
-        if (!isGPSworking(locationManager))
+        if (!isGPSworking(context))
             buildAlertMessageNoGps(context);
 
         List<String> providers = locationManager.getProviders(true);
@@ -46,6 +46,37 @@ public class UserLocationService {
             }
         }
         return bestLocation;
+    }
+
+    public static String getNearestCity(Context context, Location location){
+        Address address = getNearestAddress(context, location);
+        return address==null ? context.getString(R.string.loading) : address.getLocality();
+    }
+
+    public static String getCountry(Context context, Location location){
+        Address address = getNearestAddress(context, location);
+        return address==null ? context.getString(R.string.loading) : address.getCountryName();
+    }
+
+    private static Address getNearestAddress(Context context, Location location){
+        Address result = null;
+
+        if (!isGPSworking(context))
+            return result;
+
+        Geocoder geoCoder = new Geocoder(context, Locale.ENGLISH);
+        List<Address> list = null;
+        try {
+            list = geoCoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (list != null & list.size() > 0) {
+            Address address = list.get(0);
+            result = address;
+        }
+
+        return result;
     }
 
     private static void buildAlertMessageNoGps(final Context context) {

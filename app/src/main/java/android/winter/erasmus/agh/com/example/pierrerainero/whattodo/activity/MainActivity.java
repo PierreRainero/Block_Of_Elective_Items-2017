@@ -1,18 +1,24 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
-import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.UserLocationService;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.Country;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service.UserLocationService;
 
 public class MainActivity extends AppCompatActivity {
     private Location userLocation;
+    private Country userCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,24 +28,27 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         userLocation = UserLocationService.getLastKnownLocation(this);
 
+        final TextView tvCity = findViewById(R.id.city);
+        final TextView tvCountry = findViewById(R.id.country);
+        final ImageView ivCountry = findViewById(R.id.countryFlag);
+        tvCity.setText(UserLocationService.getNearestCity(this, userLocation));
+        tvCountry.setText(UserLocationService.getCountry(this, userLocation));
+
+        userCountry = Country.getEnumOf((String) tvCountry.getText());
+        if(userCountry!=null){
+            Drawable drawable = getResources().getDrawable(getResources().getIdentifier("flag_"+userCountry.getCode() , "drawable", getPackageName()));
+            ivCountry.setImageDrawable(drawable);
+            ivCountry.setVisibility(View.VISIBLE);
+        }else
+            ivCountry.setVisibility(View.INVISIBLE);
+
         Button returnButton = this.findViewById(R.id.button2);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
-                //myIntent.putExtra("store", selectedStore);
 
-                /*
-                * GET NEAREST CITY
-                *
-                * List<Address> list = geoCoder.getFromLocation(location
-                    .getLatitude(), location.getLongitude(), 1);
-                    if (list != null & list.size() > 0) {
-                        Address address = list.get(0);
-                        result = address.getLocality();
-                        return result;
-                * */
-                if(UserLocationService.isGPSworking((LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE)))
+                if(UserLocationService.isGPSworking(getApplicationContext()))
                     MainActivity.this.startActivity(myIntent);
             }
         });

@@ -37,8 +37,7 @@
                 android:id="@+id/countryFlag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/common_full_open_on_phone" />
+                android:layout_weight="1" />
 
         </LinearLayout>
 

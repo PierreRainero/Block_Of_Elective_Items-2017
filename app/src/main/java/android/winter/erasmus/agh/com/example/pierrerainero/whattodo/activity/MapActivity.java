@@ -1,23 +1,18 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
-import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.UserLocationService;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service.UserLocationService;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.List;
 
 /**
  * Created by PierreRainero on 05/12/2017.
