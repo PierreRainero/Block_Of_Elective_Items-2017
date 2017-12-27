@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WhatToDo</string>
+
+    <string name="loading">Loading...</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="error">Error !</string>
+    <string name="errorGPS">Your GPS seems to be disabled, do you want to enable it ?</string>
+
+    <string name="intro">You are actually at</string>
+</resources>
