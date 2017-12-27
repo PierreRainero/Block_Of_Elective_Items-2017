@@ -9,7 +9,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 
 import java.io.IOException;
@@ -24,10 +23,20 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class UserLocationService {
 
+    /**
+     * Allow to know if the GPS is working
+     * @param context current context (activity) of the app
+     * @return true if the GPS is on, false otherwise
+     */
     public static boolean isGPSworking(Context context){
         return ((LocationManager)context.getSystemService(LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    /**
+     * Return the current user location
+     * @param context current context (activity) of the app
+     * @return current user location (or 1)
+     */
     public static Location getLastKnownLocation(Context context) {
         LocationManager locationManager = (LocationManager)context.getSystemService(LOCATION_SERVICE);
         if (!isGPSworking(context))
@@ -41,18 +50,29 @@ public class UserLocationService {
                 continue;
             }
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
                 bestLocation = l;
             }
         }
         return bestLocation;
     }
 
+    /**
+     * Find the closest city from the user
+     * @param context current context (activity) of the app
+     * @param location current user location
+     * @return name of the closest city
+     */
     public static String getNearestCity(Context context, Location location){
         Address address = getNearestAddress(context, location);
         return address==null ? context.getString(R.string.loading) : address.getLocality();
     }
 
+    /**
+     * Find the country where the user is
+     * @param context current context (activity) of the app
+     * @param location current user location
+     * @return country name
+     */
     public static String getCountry(Context context, Location location){
         Address address = getNearestAddress(context, location);
         return address==null ? context.getString(R.string.loading) : address.getCountryName();

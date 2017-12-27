@@ -1,7 +1,5 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model;
 
-import android.util.Log;
-
 /**
  * Created by PierreRainero on 27/12/2017.
  */
@@ -32,6 +30,11 @@ public enum Country {
         return code;
     }
 
+    /**
+     * Allow to get an enumeration object according to a formated string
+     * @param value formated string to compare
+     * @return anumration object or null (no equivalence)
+     */
     public static Country getEnumOf(String value){
         for(Country tempo : Country.values()){
             if(tempo.getFormatedName().equals(value)){

@@ -24,6 +24,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     private MapFragment mMapFragment;
 
     @Override
+    /**
+     * {@inheritDoc}
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
