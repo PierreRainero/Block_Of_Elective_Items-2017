@@ -9,4 +9,8 @@
     <string name="errorGPS">Your GPS seems to be disabled, do you want to enable it ?</string>
 
     <string name="intro">You are actually at</string>
+    <string name="activities">There are </string>
+    <string name="mapLabel">Show me the map</string>
+
+    <string name="contentDescrFlagImg">Flag for the current country</string>
 </resources>
