@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox cbZoo;
 
     private POI[] POIToDisplay;
-    private boolean[] datas = {false,false,false,false,false};
+    private boolean[] datas = {false,false,false,false,false}; //To avoid null object when internet is really slow
 
     private int userRange;
 
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(datas[0] || datas[1] || datas[2] || datas[3] || datas[4])
+                if(!datas[0] || !datas[1] || !datas[2] || !datas[3] || !datas[4])
                     return;
                 Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
                 POIToDisplay = selectPoiToDisplay();
