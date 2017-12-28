@@ -9,11 +9,25 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
+import android.widget.TextView;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -22,6 +36,8 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 
 public class UserLocationService {
+    private static final String REQUEST_BASE = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=";
+    private static final String GOOGLE_PLACE_API_KEY = "AIzaSyBre2SVX990QCnYvyzw8zTgni-fiGYMStA";
 
     /**
      * Allow to know if the GPS is working
@@ -97,6 +113,26 @@ public class UserLocationService {
         }
 
         return result;
+    }
+
+    public static JSONObject getPOI (Location location, int range, String type) throws IOException, JSONException {
+        String answer = "";
+        String temp = "";
+        String request =  REQUEST_BASE + location.getLatitude() + "," + location.getLongitude() + "&radius=" + range + "&type=" + type +"&key=" + GOOGLE_PLACE_API_KEY;
+
+        URL url = new URL(request);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setDoOutput(true);
+        InputStream in = con.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        while ((temp = reader.readLine()) != null)
+        {
+            answer = answer + temp;
+        }
+        reader.close();
+
+        return new JSONObject(answer);
     }
 
     private static void buildAlertMessageNoGps(final Context context) {

@@ -10,7 +10,11 @@
 
     <string name="intro">You are actually at</string>
     <string name="activities">There are </string>
+    <string name="museums">museums</string>
+    <string name="parks">parks</string>
     <string name="mapLabel">Show me the map</string>
 
     <string name="contentDescrFlagImg">Flag for the current country</string>
+    <string name="contentDescrMuseumImg">Museum logo</string>
+    <string name="contentDescrParkImg">Park logo</string>
 </resources>
