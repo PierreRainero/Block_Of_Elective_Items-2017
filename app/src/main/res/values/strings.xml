@@ -4,6 +4,7 @@
     <string name="loading">Loading...</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="meter">meter(s)</string>
 
     <string name="error">Error !</string>
     <string name="errorGPS">Your GPS seems to be disabled, do you want to enable it ?</string>
@@ -12,9 +13,16 @@
     <string name="activities">There are </string>
     <string name="museums">museums</string>
     <string name="parks">parks</string>
+    <string name="churchs">churchs</string>
+    <string name="nightclubs">night clubs</string>
+    <string name="zoos">zoos</string>
+    <string name="range">Range : </string>
     <string name="mapLabel">Show me the map</string>
 
     <string name="contentDescrFlagImg">Flag for the current country</string>
     <string name="contentDescrMuseumImg">Museum logo</string>
     <string name="contentDescrParkImg">Park logo</string>
+    <string name="contentDescrChurchImg">Church logo</string>
+    <string name="contentDescrNightClubImg">Night club logo</string>
+    <string name="contentDescrZooImg">Zoo logo</string>
 </resources>
