@@ -9,15 +9,10 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
-import android.widget.TextView;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +22,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -119,7 +113,6 @@ public class UserLocationService {
         String answer = "";
         String temp = "";
         String request =  REQUEST_BASE + location.getLatitude() + "," + location.getLongitude() + "&radius=" + range + "&type=" + type +"&key=" + GOOGLE_PLACE_API_KEY;
-
         URL url = new URL(request);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");

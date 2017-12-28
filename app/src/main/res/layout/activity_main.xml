@@ -79,6 +79,14 @@
         android:elevation="4dp"
         android:padding="8dip">
 
+        <ImageButton
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="right"
+            app:srcCompat="@drawable/icon_refresh" />
+
         <TextView
             android:id="@+id/activities"
             android:layout_width="wrap_content"
@@ -101,9 +109,23 @@
 
             <TextView
                 android:id="@+id/museum"
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
+
+            <CheckBox
+                android:id="@+id/museumMarker"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/markerBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/contentDescrMarkerBlue"
+                app:srcCompat="@drawable/marker_blue" />
         </LinearLayout>
 
         <LinearLayout
@@ -123,9 +145,23 @@
 
             <TextView
                 android:id="@+id/park"
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
+
+            <CheckBox
+                android:id="@+id/parkMarker"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/markerGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/contentDescrMarkerGreen"
+                app:srcCompat="@drawable/marker_green" />
         </LinearLayout>
 
         <LinearLayout
@@ -145,9 +181,23 @@
 
             <TextView
                 android:id="@+id/church"
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
+
+            <CheckBox
+                android:id="@+id/churchMarker"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/markerRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/contentDescrMarkerRed"
+                app:srcCompat="@drawable/marker_red" />
         </LinearLayout>
 
         <LinearLayout
@@ -167,9 +217,23 @@
 
             <TextView
                 android:id="@+id/nightClub"
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
+
+            <CheckBox
+                android:id="@+id/nightClubMarker"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/markerPurple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/contentDescrMarkerPurple"
+                app:srcCompat="@drawable/marker_purple" />
         </LinearLayout>
 
         <LinearLayout
@@ -189,9 +253,23 @@
 
             <TextView
                 android:id="@+id/zoo"
-                android:layout_width="200dp"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:text="@string/loading" />
+
+            <CheckBox
+                android:id="@+id/zooMarker"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/markerOrange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:contentDescription="@string/contentDescrMarkerOrange"
+                app:srcCompat="@drawable/marker_orange" />
         </LinearLayout>
 
 
@@ -229,7 +307,7 @@
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/mapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mapLabel" />

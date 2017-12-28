@@ -7,20 +7,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.Country;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.POI;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.Type;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service.UserLocationService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,11 +31,21 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MainActivity extends AppCompatActivity {
     private Location userLocation;
     private Country userCountry;
+
     private final AtomicReference<JSONArray> poiMuseums = new AtomicReference<>();
     private final AtomicReference<JSONArray> poiParks = new AtomicReference<>();
     private final AtomicReference<JSONArray> poiChurchs = new AtomicReference<>();
     private final AtomicReference<JSONArray> poiNightClubs = new AtomicReference<>();
     private final AtomicReference<JSONArray> poiZoos = new AtomicReference<>();
+
+    private CheckBox cbMuseum;
+    private CheckBox cbPark;
+    private CheckBox cbChurch;
+    private CheckBox cbNightClub;
+    private CheckBox cbZoo;
+
+    private POI[] POIToDisplay;
+    private boolean[] datas = {false,false,false,false,false};
 
     private int userRange;
 
@@ -46,20 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        cbMuseum = this.findViewById(R.id.museumMarker);
+        cbPark = this.findViewById(R.id.parkMarker);
+        cbChurch = this.findViewById(R.id.churchMarker);
+        cbNightClub = this.findViewById(R.id.nightClubMarker);
+        cbZoo = this.findViewById(R.id.zooMarker);
+
         initLocView();
         userSettings();
-        initActivitiesView();
-
-        Button returnButton = this.findViewById(R.id.button2);
-        returnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
-
-                if(UserLocationService.isGPSworking(getApplicationContext()))
-                    MainActivity.this.startActivity(myIntent);
-            }
-        });
+        updateActivitiesView();
+        initButtons();
     }
 
     private void initLocView(){
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(edRange.getText().toString().length()<=0 )
+                if(edRange.getText().toString().length()<=0)
                     edRange.setText("1");
 
                 userRange = Integer.parseInt(edRange.getText().toString());
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initActivitiesView(){
+    private void updateActivitiesView(){
         final TextView tvMuseum = findViewById(R.id.museum);
         final TextView tvPark = findViewById(R.id.park);
         final TextView tvChurch = findViewById(R.id.church);
@@ -111,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiMuseums.set((UserLocationService.getPOI(userLocation, userRange, "museum").getJSONArray("results")));
+                    datas[0] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -119,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 tvMuseum.post(new Runnable() {
                     public void run() {
                         tvMuseum.setText(poiMuseums.get().length()+" "+getString(R.string.museums));
-                        System.out.println(poiMuseums.get().toString());
                     }
                 });
             }
@@ -129,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiParks.set((UserLocationService.getPOI(userLocation, userRange, "park").getJSONArray("results")));
+                    datas[1] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -146,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiChurchs.set((UserLocationService.getPOI(userLocation, userRange, "church").getJSONArray("results")));
+                    datas[2] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -163,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiNightClubs.set((UserLocationService.getPOI(userLocation, userRange, "night_club").getJSONArray("results")));
+                    datas[3] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -180,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiZoos.set((UserLocationService.getPOI(userLocation, userRange, "zoo").getJSONArray("results")));
+                    datas[4] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -192,6 +205,158 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }).start();
+    }
+
+    private void initButtons(){
+
+        ImageButton refreshBtn = this.findViewById(R.id.refreshButton);
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateActivitiesView();
+            }
+        });
+
+        Button mapBtn = this.findViewById(R.id.mapButton);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(datas[0] || datas[1] || datas[2] || datas[3] || datas[4])
+                    return;
+                Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
+                POIToDisplay = selectPoiToDisplay();
+                myIntent.putExtra("pois", POIToDisplay);
+                if(UserLocationService.isGPSworking(getApplicationContext()))
+                    MainActivity.this.startActivity(myIntent);
+            }
+        });
+    }
+
+    private POI[] selectPoiToDisplay(){
+        int nbOfPoi = 0, i=0, localMax;
+        boolean useMuseum = cbMuseum.isChecked(), usePark = cbPark.isChecked(),
+                useChurch = cbChurch.isChecked(), useNightClub = cbNightClub.isChecked(),
+                useZoo = cbZoo.isChecked();
+
+        if(useMuseum)
+            nbOfPoi += poiMuseums.get().length();
+        if(usePark)
+            nbOfPoi += poiParks.get().length();
+        if(useChurch)
+            nbOfPoi += poiChurchs.get().length();
+        if(useNightClub)
+            nbOfPoi += poiNightClubs.get().length();
+        if(useZoo)
+            nbOfPoi += poiZoos.get().length();
+
+        POI[] result = new POI[nbOfPoi];
+
+        if(useMuseum){
+            localMax = poiMuseums.get().length();
+            for(int y=0;y<localMax;y++){
+                String name = "";
+                Type type = Type.MUSEUM;
+                double lat=0, lng=0;
+                try {
+                    JSONObject element = (JSONObject) poiMuseums.get().get(y);
+                    JSONObject location = element.getJSONObject("geometry").getJSONObject("location");
+                    lat = location.getDouble("lat");
+                    lng = location.getDouble("lng");
+                    name = element.getString("name");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result[i] = new POI(name, type, lat, lng);
+                i++;
+            }
+        }
+
+        if(usePark){
+            localMax = poiParks.get().length();
+            for(int y=0;y<localMax;y++){
+                String name = "";
+                Type type = Type.PARK;
+                double lat=0, lng=0;
+                try {
+                    JSONObject element = (JSONObject) poiParks.get().get(y);
+                    JSONObject location = element.getJSONObject("geometry").getJSONObject("location");
+                    lat = location.getDouble("lat");
+                    lng = location.getDouble("lng");
+                    name = element.getString("name");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result[i] = new POI(name, type, lat, lng);
+                i++;
+            }
+        }
+
+        if(useChurch){
+            localMax = poiChurchs.get().length();
+            for(int y=0;y<localMax;y++){
+                String name = "";
+                Type type = Type.CHURCH;
+                double lat=0, lng=0;
+                try {
+                    JSONObject element = (JSONObject) poiChurchs.get().get(y);
+                    JSONObject location = element.getJSONObject("geometry").getJSONObject("location");
+                    lat = location.getDouble("lat");
+                    lng = location.getDouble("lng");
+                    name = element.getString("name");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result[i] = new POI(name, type, lat, lng);
+                i++;
+            }
+        }
+
+        if(useNightClub){
+            localMax = poiNightClubs.get().length();
+            for(int y=0;y<localMax;y++){
+                String name = "";
+                Type type = Type.NIGHT_CLUB;
+                double lat=0, lng=0;
+                try {
+                    JSONObject element = (JSONObject) poiNightClubs.get().get(y);
+                    JSONObject location = element.getJSONObject("geometry").getJSONObject("location");
+                    lat = location.getDouble("lat");
+                    lng = location.getDouble("lng");
+                    name = element.getString("name");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result[i] = new POI(name, type, lat, lng);
+                i++;
+            }
+        }
+
+        if(useZoo){
+            localMax = poiZoos.get().length();
+            for(int y=0;y<localMax;y++){
+                String name = "";
+                Type type = Type.ZOO;
+                double lat=0, lng=0;
+                try {
+                    JSONObject element = (JSONObject) poiZoos.get().get(y);
+                    JSONObject location = element.getJSONObject("geometry").getJSONObject("location");
+                    lat = location.getDouble("lat");
+                    lng = location.getDouble("lng");
+                    name = element.getString("name");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                result[i] = new POI(name, type, lat, lng);
+                i++;
+            }
+        }
+
+        return result;
     }
 }
 

@@ -25,4 +25,9 @@
     <string name="contentDescrChurchImg">Church logo</string>
     <string name="contentDescrNightClubImg">Night club logo</string>
     <string name="contentDescrZooImg">Zoo logo</string>
+    <string name="contentDescrMarkerBlue">Blue marker</string>
+    <string name="contentDescrMarkerGreen">Green marker</string>
+    <string name="contentDescrMarkerRed">Red marker</string>
+    <string name="contentDescrMarkerPurple">Purple marker</string>
+    <string name="contentDescrMarkerOrange">Orange marker</string>
 </resources>
