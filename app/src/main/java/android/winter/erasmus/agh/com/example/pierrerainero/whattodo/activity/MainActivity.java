@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox cbZoo;
 
     private POI[] POIToDisplay;
-    private boolean[] datas = {false,false,false,false,false}; //To avoid null object when internet is really slow
 
     private int userRange;
 
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiMuseums.set((UserLocationService.getPOI(userLocation, userRange, "museum").getJSONArray("results")));
-                    datas[0] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -138,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiParks.set((UserLocationService.getPOI(userLocation, userRange, "park").getJSONArray("results")));
-                    datas[1] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -156,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiChurchs.set((UserLocationService.getPOI(userLocation, userRange, "church").getJSONArray("results")));
-                    datas[2] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -174,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiNightClubs.set((UserLocationService.getPOI(userLocation, userRange, "night_club").getJSONArray("results")));
-                    datas[3] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -192,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     poiZoos.set((UserLocationService.getPOI(userLocation, userRange, "zoo").getJSONArray("results")));
-                    datas[4] = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -221,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!datas[0] || !datas[1] || !datas[2] || !datas[3] || !datas[4])
+                if(poiMuseums.get()==null || poiParks.get()==null || poiChurchs.get()==null || poiNightClubs.get()==null || poiZoos.get()==null )
                     return;
                 Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
                 POIToDisplay = selectPoiToDisplay();
