@@ -51,7 +51,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
-            userLocation = UserLocationService.getLastKnownLocation(this);
+            userLocation = UserLocationService.getLastKnownLocation(this, null);
             addMarkers();
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 15));
         }

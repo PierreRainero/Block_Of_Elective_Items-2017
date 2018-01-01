@@ -1,25 +1,19 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import android.location.LocationListener;
+import android.location.LocationManager;
+
+import android.support.v4.content.ContextCompat;
+
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +51,7 @@ public class UserLocationService {
      * @param context current context (activity) of the app
      * @return current user location (or 1)
      */
-    public static Location getLastKnownLocation(Context context) {
+    public static Location getLastKnownLocation(Context context, LocationListener listener) {
         LocationManager locationManager = (LocationManager)context.getSystemService(LOCATION_SERVICE);
         if (!isGPSworking(context))
             buildAlertMessageNoGps(context);
@@ -65,7 +59,12 @@ public class UserLocationService {
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
-            @SuppressLint("MissingPermission") Location l = locationManager.getLastKnownLocation(provider);
+            Location l = null;
+            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                if(listener!=null)
+                    locationManager.requestSingleUpdate(provider, listener, null);
+                l = locationManager.getLastKnownLocation(provider);
+            }
             if (l == null) {
                 continue;
             }

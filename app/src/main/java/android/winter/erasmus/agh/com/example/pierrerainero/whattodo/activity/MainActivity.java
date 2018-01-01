@@ -1,14 +1,18 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.activity;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+
 import android.location.Location;
+import android.location.LocationListener;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,7 +25,9 @@ import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.Country;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.POI;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.model.Type;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service.NetworkService;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service.UserLocationService;
+import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.util.LocationVariable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +37,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends AppCompatActivity {
-    private Location userLocation;
+    private LocationVariable userLocation;
     private Country userCountry;
 
     private final AtomicReference<JSONArray> poiMuseums = new AtomicReference<>();
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int userRange;
 
+    @SuppressLint("MissingPermission")
     @Override
     /**
      * {@inheritDoc}
@@ -68,20 +75,51 @@ public class MainActivity extends AppCompatActivity {
 
         getIntent().setAction("Already created");
 
-        initLocView();
         userSettings();
-        updateActivitiesView();
         initButtons();
+
+        final Context ctx = this;
+        userLocation = new LocationVariable();
+        userLocation.setListener(new LocationVariable.ChangeListener() {
+            @Override
+            public void onChange() {
+                if(NetworkService.isNetworkAvailable(ctx)){
+                    initLocView();
+                    updateActivitiesView();
+                }
+            }
+        });
+
+        LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                userLocation.setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+        UserLocationService.getLastKnownLocation(this, listener);
     }
 
     private void initLocView(){
-        userLocation = UserLocationService.getLastKnownLocation(this);
-
         final TextView tvCity = findViewById(R.id.city);
         final TextView tvCountry = findViewById(R.id.country);
         final ImageView ivCountry = findViewById(R.id.countryFlag);
-        tvCity.setText(UserLocationService.getNearestCity(this, userLocation));
-        tvCountry.setText(UserLocationService.getCountry(this, userLocation));
+        tvCity.setText(UserLocationService.getNearestCity(this, userLocation.getLocation()));
+        tvCountry.setText(UserLocationService.getCountry(this, userLocation.getLocation()));
 
         userCountry = Country.getEnumOf((String) tvCountry.getText());
         if(userCountry!=null){
@@ -125,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread (new Runnable() {
             public void run() {
                 try {
-                    poiMuseums.set((UserLocationService.getPOI(userLocation, userRange, "museum").getJSONArray("results")));
+                    poiMuseums.set((UserLocationService.getPOI(userLocation.getLocation(), userRange, "museum").getJSONArray("results")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -142,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread (new Runnable() {
             public void run() {
                 try {
-                    poiParks.set((UserLocationService.getPOI(userLocation, userRange, "park").getJSONArray("results")));
+                    poiParks.set((UserLocationService.getPOI(userLocation.getLocation(), userRange, "park").getJSONArray("results")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -159,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread (new Runnable() {
             public void run() {
                 try {
-                    poiChurchs.set((UserLocationService.getPOI(userLocation, userRange, "church").getJSONArray("results")));
+                    poiChurchs.set((UserLocationService.getPOI(userLocation.getLocation(), userRange, "church").getJSONArray("results")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -176,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread (new Runnable() {
             public void run() {
                 try {
-                    poiNightClubs.set((UserLocationService.getPOI(userLocation, userRange, "night_club").getJSONArray("results")));
+                    poiNightClubs.set((UserLocationService.getPOI(userLocation.getLocation(), userRange, "night_club").getJSONArray("results")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -193,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread (new Runnable() {
             public void run() {
                 try {
-                    poiZoos.set((UserLocationService.getPOI(userLocation, userRange, "zoo").getJSONArray("results")));
+                    poiZoos.set((UserLocationService.getPOI(userLocation.getLocation(), userRange, "zoo").getJSONArray("results")));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -209,11 +247,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initButtons(){
-
         ImageButton refreshBtn = this.findViewById(R.id.refreshButton);
         refreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(poiMuseums.get()==null || poiParks.get()==null || poiChurchs.get()==null || poiNightClubs.get()==null || poiZoos.get()==null)
+                    return;
+
                 updateActivitiesView();
             }
         });
@@ -222,8 +262,9 @@ public class MainActivity extends AppCompatActivity {
         mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(poiMuseums.get()==null || poiParks.get()==null || poiChurchs.get()==null || poiNightClubs.get()==null || poiZoos.get()==null )
+                if(poiMuseums.get()==null || poiParks.get()==null || poiChurchs.get()==null || poiNightClubs.get()==null || poiZoos.get()==null)
                     return;
+
                 Intent myIntent = new Intent(MainActivity.this, MapActivity.class);
                 POIToDisplay = selectPoiToDisplay();
                 myIntent.putExtra("pois", POIToDisplay);
