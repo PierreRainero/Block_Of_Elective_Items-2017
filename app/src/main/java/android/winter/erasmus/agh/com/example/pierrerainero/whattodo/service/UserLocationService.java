@@ -1,15 +1,25 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.service;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.winter.erasmus.agh.com.example.pierrerainero.whattodo.R;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import android.location.LocationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +48,8 @@ public class UserLocationService {
      * @param context current context (activity) of the app
      * @return true if the GPS is on, false otherwise
      */
-    public static boolean isGPSworking(Context context){
-        return ((LocationManager)context.getSystemService(LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
+    public static boolean isGPSworking(Context context) {
+        return ((LocationManager) context.getSystemService(LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     /**

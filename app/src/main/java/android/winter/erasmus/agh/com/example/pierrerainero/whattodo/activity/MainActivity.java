@@ -1,5 +1,6 @@
 package android.winter.erasmus.agh.com.example.pierrerainero.whattodo.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         cbNightClub = this.findViewById(R.id.nightClubMarker);
         cbZoo = this.findViewById(R.id.zooMarker);
 
+        getIntent().setAction("Already created");
+
         initLocView();
         userSettings();
         updateActivitiesView();
@@ -114,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView tvChurch = findViewById(R.id.church);
         final TextView tvNightClub = findViewById(R.id.nightClub);
         final TextView tvZoo = findViewById(R.id.zoo);
+
+        if(userLocation==null)
+            return;
 
         new Thread (new Runnable() {
             public void run() {
@@ -351,6 +358,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return result;
+    }
+
+
+
+    @Override
+    /**
+     * {@inheritDoc}
+     */
+    protected void onResume() {
+        String action = getIntent().getAction();
+
+        if(action == null || !action.equals("Already created")) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else
+            getIntent().setAction(null);
+
+        super.onResume();
     }
 }
 
