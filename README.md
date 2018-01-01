@@ -13,9 +13,9 @@
 _Minimal version_ : 21 (Android 5.0 - Lollipop)
 
 ## Description
-This application aims to find activities according to the distance with the user and the kind places that interest him :
-![main](imgs/main.jpg)   ![map](imgs/map.jpg)
-The location is calculed according to the "fine" method, which means that the network and gps are used (various checks are made to avoid problems) :
+This application aims to find activities according to the distance between the user and places that interest him :   
+![main](imgs/main.jpg)   ![map](imgs/map.jpg)   <br/>
+The location is calculed according to the "fine" method, which means the network and gps are used (various checks are made to avoid problems) :   
 ![gps_check](imgs/gps_check.jpg) 
   
 ## How to install
